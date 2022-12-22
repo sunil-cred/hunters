@@ -1,3 +1,4 @@
+import json
 import random
 from settings import SMS_API_URL,SMS_ACCESS_TOKEN
 import requests
@@ -7,16 +8,19 @@ async def send_sms_otp(mobile,  otp):
     url = f"{SMS_API_URL}/sms"
     data = {
         "sms_mobile": mobile,
-        "sms_body": f"Your Hunters verification code is {otp}. OTPs are SECRET. DO NOT disclose it to anyone.",
+        "sms_body": f"Your Credgenics verification code is 12345. OTPs are SECRET. DO NOT disclose it to anyone.",
         "content_template_id": "1107161513838675588",
-        "principal_entity_id": "1101360080000040019"
+        "principal_entity_id": "1101360080000040019",
+        "source": "otp",
+        "module": "platform"
     }
     headers = {
         "authenticationtoken" : SMS_ACCESS_TOKEN,
-        "referer" : "hackathon"
+        "referer" : "hackathon",
+        "content-type":"application/json",
     }
 
-    res = requests.post(url, json=data, headers=headers)
+    res = requests.post(url, data=json.dumps(data), headers=headers)
     print(res.status_code)
     print(res.text)
     if hasattr(res, "text"):
