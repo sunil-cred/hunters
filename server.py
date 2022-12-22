@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 import logging
-from app.routes.test_routes import router as test_router
+from app.routes.users import router as test_router
 from settings import *
 from app.util.auth import get_service_permissions
 from app.models import models

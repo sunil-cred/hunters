@@ -1,36 +1,35 @@
-from sqlalchemy.orm import Session
-from app.models import models
-from app.models import schemas
+import random
+from settings import SMS_API_URL,SMS_ACCESS_TOKEN
+import requests
 
+async def send_sms_otp(mobile,  otp):
+    sms_flag = False
+    url = f"{SMS_API_URL}/sms"
+    data = {
+        "sms_mobile": mobile,
+        "sms_body": f"Your Hunters verification code is {otp}. OTPs are SECRET. DO NOT disclose it to anyone.",
+        "content_template_id": "1107161513838675588",
+        "principal_entity_id": "1101360080000040019"
+    }
+    headers = {
+        "authenticationtoken" : SMS_ACCESS_TOKEN,
+        "referer" : "hackathon"
+    }
 
-async def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+    res = requests.post(url, json=data, headers=headers)
+    print(res.status_code)
+    print(res.text)
+    if hasattr(res, "text"):
+        if res.status_code in (200, 201):
+            sms_flag = True
+        else:
+            return False
+    else:
+        return False
+    return sms_flag
 
-
-async def get_user_by_email(db: Session, email: str):
-    return db.query(models.User).filter(models.User.email == email).first()
-
-
-async def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.User).offset(skip).limit(limit).all()
-
-
-async def create_user(db: Session, user: schemas.UserCreate):
-    fake_hashed_password = user.password + "notreallyhashed"
-    db_user = models.User(email=user.email, hashed_password=fake_hashed_password)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
-
-async def get_items(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.Item).offset(skip).limit(limit).all()
-
-
-async def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
-    db_item = models.Item(**item.dict(), owner_id=user_id)
-    db.add(db_item)
-    db.commit()
-    db.refresh(db_item)
-    return db_item
+def otp_gen():
+    otp = ""
+    for i in range(5):
+        otp += str(random.randint(1, 9))
+    return otp
