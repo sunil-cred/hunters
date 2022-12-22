@@ -1,0 +1,6 @@
+fastapi==0.73.0
+uvicorn==0.17.4
+python-dotenv==0.15.0
+elastic-apm==6.9.1
+sqlalchemy==1.4.29
+psycopg2==2.9.3

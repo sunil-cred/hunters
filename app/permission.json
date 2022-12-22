@@ -1,0 +1,27 @@
+{
+    "Test Service": {
+        "permission-set1": {
+            "meta_data": {"name": "permission name1", "description": "for xyz usecase"},
+            "read": {
+                "endpoint1": ["GET"],
+                "endpoint2":["GET"],
+                "endpoint3":["GET"]
+            },
+            "write":{
+                "endpoint4": ["GET"],
+                "endpoint5":["POST"],
+                "endpoint6":["PATCH"]
+            }
+            
+        },
+        "permission-set2": {
+            "meta_data": {"name": "permission name2", "description": "for abc usecase"},
+            "write": { 
+                "endpoint7":["GET"],
+                "endpoint8":["GET"],
+                "endpoint9":["GET"]
+                
+            }
+        }
+    }
+}
