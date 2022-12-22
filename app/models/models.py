@@ -13,7 +13,7 @@ class User(Base):
     mobile = Column(BIGINT)
     email =  Column(String)
     date_of_birth = Column(DATE)
-    created_at = Column(TIMESTAMP)
+    created_at = Column(TIMESTAMP,ColumnDefault("now()"))
     updated_at =Column(TIMESTAMP,ColumnDefault("now()"))
     is_deleted = Column(Boolean,ColumnDefault(False))
 
@@ -66,8 +66,8 @@ class LenderDetails(Base):
     settlement_percentage = Column(Integer)
     created_at = Column(TIMESTAMP)
     created_by = Column(String)
-    Updated_at = Column(TIMESTAMP)
-    Updated_by = Column(String)
+    updated_at = Column(TIMESTAMP)
+    updated_by = Column(String)
     is_deleted = Column(Boolean)
 
 class DocumentDetails(Base):
