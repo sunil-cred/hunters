@@ -16,6 +16,8 @@ class User(Base):
     created_at = Column(TIMESTAMP,ColumnDefault("now()"))
     updated_at =Column(TIMESTAMP,ColumnDefault("now()"))
     is_deleted = Column(Boolean,ColumnDefault(False))
+    otp = Column(Integer)
+    is_verified = Column(Boolean,ColumnDefault(False))
 
 
 class LoanDetails(Base):
@@ -39,6 +41,7 @@ class LoanDetails(Base):
     updated_at = Column(TIMESTAMP)
     updated_by = Column(String)
     is_deleted = Column(Boolean,ColumnDefault(False))
+    lender_id = Column(BIGINT,ForeignKey("lender_details.id"))
 
 class Transactions(Base):
     __tablename__ = "transactions"
