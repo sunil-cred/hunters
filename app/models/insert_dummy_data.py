@@ -3,10 +3,9 @@ import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
-from settings import *
+from settings import DATABASE_URL
 import random
 from app.models import models
-from sqlalchemy.orm import Session
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -22,13 +21,18 @@ def get_db():
         db.close()
 
 
-def inser_dummy_data(db: Session):
+def insert_dummy_data():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
     random_numbers = [8769043084, 9717583998, 8527555374, 9711467629, 8076153440, 97582557020]
     statuses = ["default", "closed", "partially closed", "recovered", "partially recovered"]
     for i in range(1, 2):
         dummy_data = {
             "loan_id": f"HUNTERS_{i}",
-            "name": f"{i}_rupee_ki_pepsi",
+            "name": f"{i}_rupaiya_dega",
             "mobile": random.choice(random_numbers),
             "email": f"hunter_{i}@yopmail.com",
             "loan_sanctioned_amount": 100000.0 + i,
@@ -53,7 +57,5 @@ def inser_dummy_data(db: Session):
             print("Failed to upload", err)
 
 
-
 if __name__ == "__main__":
-    # inser_dummy_data(Depend(get_db()))
-    pass
+    insert_dummy_data()
