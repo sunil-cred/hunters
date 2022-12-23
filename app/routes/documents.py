@@ -9,21 +9,27 @@ import os
 router = APIRouter()
 
 @router.post("/documents/upload")
-def upload(file: UploadFile = File(...), document_type:str = Form(...),user_id:str = Form(...), db: Session = Depends(get_db)):
+def upload(pan: UploadFile = File(...),
+           aadhaar: UploadFile = File(...),
+           salary: UploadFile = File(...),
+           cheque: UploadFile = File(...),
+           user_id:str = Form(...), db: Session = Depends(get_db)):
+    docs = {"pancard":pan,"aadhaar":aadhaar,"salary":salary,"cheque":cheque}
     try:
-        contents = file.file.read()
-        directory = f"downloads/{document_type}/{user_id}"
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-        doc_link = f"{directory}/{file.filename}"
-        with open(doc_link, 'wb') as f:
-            f.write(contents)
-        db.add(DocumentDetails(user_id=user_id,document_type=document_type,document_link=doc_link,
+        for doc in docs.keys():
+            directory = f"downloads/{doc}/{user_id}"
+            if not os.path.exists(directory):
+                os.makedirs(directory)
+            doc_link = f"{directory}/{docs[doc].filename}"
+            with open(doc_link, 'wb') as f:
+                f.write(docs[doc].file.read())
+            db.add(DocumentDetails(user_id=user_id,document_type=doc,document_link=doc_link,
                               verification_status=False ))
         db.commit()
     except Exception as e:
         print(e)
         return response_handler(False,"There was an error uploading the file",500,None)
     finally:
-        file.file.close()
-    return response_handler(False,f"Successfully uploaded {file.filename}",201,None)
+        for doc in docs.values():
+            doc.file.close()
+    return response_handler(True,f"Successfully uploaded documents",201,None)

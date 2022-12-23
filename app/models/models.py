@@ -18,6 +18,7 @@ class User(Base):
     is_deleted = Column(Boolean,ColumnDefault(False))
     otp = Column(Integer)
     is_verified = Column(Boolean,ColumnDefault(False))
+    reason = Column(String)
 
 
 class LoanDetails(Base):

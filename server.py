@@ -11,7 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 extra = {"app_name": MODULE_NAME}
 
-origins = ["http://127.0.0.1:5173"]
+origins = ["http://127.0.0.1:5173","http://192.168.4.239:5173"]
 
 
 
