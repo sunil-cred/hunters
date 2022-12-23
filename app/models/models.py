@@ -89,3 +89,41 @@ class DocumentDetails(Base):
     Updated_at = Column(TIMESTAMP)
     Updated_by = Column(String)
     is_deleted = Column(Boolean)
+
+class Cibil(Base):
+    __tablename__ = "cibil"
+
+    id = Column(BIGINT, primary_key=True, index=True, autoincrement=True)
+    mobile = Column(BIGINT)
+    active_loans = Column(Integer)
+    total_loan_amount = Column(FLOAT)
+    active_credit_cards = Column(Integer)
+    overdue_payments = Column(Integer)
+    overdue_payment_amount = Column(FLOAT)
+    score = Column(Integer,ColumnDefault(500))
+    created_at = Column(TIMESTAMP,ColumnDefault("now()"))
+    updated_at = Column(TIMESTAMP,ColumnDefault("now()"))
+
+class CibilAccounts(Base):
+    __tablename__ = "cibil_accounts"
+
+    account_id = Column(BIGINT)
+    loan_id = Column(BIGINT, primary_key=True, index=True)
+    type = Column(String,ColumnDefault("LOAN"))
+    amount = Column(FLOAT)
+    amount_remaining = Column(FLOAT)
+    lender_id = Column(String)
+    lender_name = Column(String)
+    status = Column(Boolean,ColumnDefault(True))
+    open_date = Column(TIMESTAMP,ColumnDefault("now()"))
+    close_date = Column(TIMESTAMP)
+
+class CibilAccountsHistory(Base):
+    __tablename__ = "cibil_account_history"
+
+    transaction_id = Column(BIGINT,primary_key=True, index=True, autoincrement=True)
+    account_id = Column(BIGINT)
+    status = Column(String)
+    due_date = Column(DATE)
+    amount = Column(FLOAT)
+    payment_date = Column(TIMESTAMP)
