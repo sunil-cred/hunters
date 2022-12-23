@@ -20,7 +20,7 @@ def upload(pan: UploadFile = File(...),
             directory = f"downloads/{doc}/{user_id}"
             if not os.path.exists(directory):
                 os.makedirs(directory)
-            doc_link = f"{directory}/{docs[doc].filename}"
+            doc_link = f"""{directory}/{docs[doc].filename.replace(" ","_")}"""
             with open(doc_link, 'wb') as f:
                 f.write(docs[doc].file.read())
             db.add(DocumentDetails(user_id=user_id,document_type=doc,document_link=doc_link,

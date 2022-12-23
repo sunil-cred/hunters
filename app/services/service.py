@@ -90,7 +90,7 @@ async def fetch_account_details(mobile, db: Session):
         print("Failed to fetch account details", e)
         return False, "Failed to fetch account details", HTTPStatus.INTERNAL_SERVER_ERROR.value, {}
     if not response:
-        return True, "Loan Account details not available", HTTPStatus.OK.value, data
+        return True, "Loan Account details not available", HTTPStatus.BAD_REQUEST.value, data
     account_id = response.id
     try:
         accounts = db.query(CibilAccounts).filter(CibilAccounts.account_id == account_id).all()
