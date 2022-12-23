@@ -71,10 +71,12 @@ def calculating_risk_factor(user_id):
 
 
 async def fetch_account_details(mobile, db: Session):
-    user_name = get_user_mobile(db, mobile)
-    name = user_name.first_name
-    if user_name.first_name and user_name.last_name:
-        name += (" " + user_name.last_name)
+    user_details = get_user_mobile(db, mobile)
+    if not user_details:
+        return False, "User Details not available", HTTPStatus.BAD_REQUEST.value, {}
+    name = user_details.first_name
+    if user_details.first_name and user_details.last_name:
+        name += (" " + user_details.last_name)
     response = []
     total_amount_due = 0
     data = {
@@ -88,7 +90,7 @@ async def fetch_account_details(mobile, db: Session):
         print("Failed to fetch account details", e)
         return False, "Failed to fetch account details", HTTPStatus.INTERNAL_SERVER_ERROR.value, {}
     if not response:
-        return True, "Account details not available", HTTPStatus.OK.value, data
+        return True, "Loan Account details not available", HTTPStatus.OK.value, data
     account_id = response.id
     try:
         accounts = db.query(CibilAccounts).filter(CibilAccounts.account_id == account_id).all()
