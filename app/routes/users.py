@@ -1,7 +1,7 @@
-from ..constants import *
 from fastapi import Depends, APIRouter
 from sqlalchemy.orm import Session
 from app.models import schemas
+from app.models.insert_dummy_data import insert_dummy_data_cibil_accounts_history
 from app.models.models import User
 from app.database import SessionLocal
 from app.services.service import send_sms_otp,otp_gen,get_user_mobile,get_user_id,update_user_otp,update_user_status
@@ -57,3 +57,10 @@ async def check_user_risk(otpLogin: schemas.OTPLogin, db: Session = Depends(get_
     if otpLogin.otp == 12345:
         return  response_handler(True,"verification successful.",200,None)
     return response_handler(True,"Unable to send OTP currently.Please try again.",200,None)
+
+
+@router.post("/dummy")
+async def run_dummy_script(db: Session = Depends(get_db)):
+    ## Import the data insertion method from insert_dummy_data.py to upload data
+    status = insert_dummy_data_cibil_accounts_history(db)
+    return {"success": status}
