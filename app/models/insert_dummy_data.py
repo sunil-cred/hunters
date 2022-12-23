@@ -190,25 +190,25 @@ def insert_dummy_data_cibil(db: Session):
 
 def insert_dummy_data_cibil_accounts_history(db: Session):
     status = True
-    for i in range(1, 50):
+    for i in range(50, 201):
         if i % 3:
             status = "Successful"
-            due_date = datetime.datetime(2022, 11, 10)
+            due_date = datetime.datetime(2022, 11, 24)
             payment_date = datetime.datetime(2022, 11, 5)
         elif i % 5:
             status = "Processing"
-            due_date = datetime.datetime(2022, 12, 30)
+            due_date = datetime.datetime(2022, 12, 28)
             payment_date = datetime.datetime(2022, 12, 23)
         else:
             status = "Failed"
-            due_date = datetime.datetime(2022, 12, 20)
+            due_date = datetime.datetime(2022, 12, 18)
             payment_date = datetime.datetime(2022, 12, 15)
         dummy_data = {
             "transaction_id": i,
-            "account_id": 10 + i,
+            "account_id": (i % 10) + 1,
             "status": status,
             "due_date": due_date,
-            "amount": 1000,
+            "amount": 2000,
             "payment_date": payment_date
         }
         try:

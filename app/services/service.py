@@ -75,8 +75,9 @@ def calculating_risk_factor(user_id):
 async def fetch_account_details(mobile, db: Session):
     user_details = db.query(LoanDetails).filter(LoanDetails.mobile == mobile).order_by(sqlalchemy.desc(LoanDetails.created_at)).limit(1).first()
     if not user_details:
-        return False, "User Details not available", HTTPStatus.BAD_REQUEST.value, {}
-    name = user_details.name
+        name = random.choice(["Ravi Kumar", "Gaurav Tiwari", "Humaera", "Indrajeet Singh", "Akshay", "Nitesh Chaudhary"])
+    else:
+        name = user_details.name
     response = []
     total_amount_due = 0
     data = {
@@ -105,7 +106,9 @@ async def fetch_account_details(mobile, db: Session):
             "loan_id": x.loan_id,
             "type": x.type,
             "amount_remaining": x.amount_remaining,
-            "due_date": date(2022, 12, 15) + timedelta(days=random.randint(1, 60))
+            "due_date": date(2022, 12, 15) + timedelta(days=random.randint(1, 60)),
+            "lending_company": x.lender_name,
+            "installment_number": random.randint(1, 9)
         }
         accounts_response.append(account_data)
 
