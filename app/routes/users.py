@@ -1,4 +1,3 @@
-from ..constants import *
 from fastapi import Depends, APIRouter
 from sqlalchemy.orm import Session
 from app.models import schemas
