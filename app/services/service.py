@@ -3,9 +3,9 @@ import random
 from settings import SMS_API_URL,SMS_ACCESS_TOKEN
 import requests
 from sqlalchemy.orm import Session
-from sqlalchemy import BIGINT
 from sqlalchemy import update
 from app.models.models import User
+import time
 
 async def send_sms_otp(mobile,  otp):
     sms_flag = False
@@ -71,3 +71,13 @@ def update_user_otp(db:Session,user_id:int,otp:int):
         .execution_options(synchronize_session="fetch")
     )
     return db.execute(stmt)
+
+def otp_gen():
+    otp = ""
+    for i in range(5):
+        otp += str(random.randint(1, 9))
+    return int(otp)
+
+def calculating_risk_factor(user_id):
+    time.sleep(0.8)
+    return random.randint(300, 900) > 600

@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.models import schemas
 from app.models.models import User
 from app.database import get_db
-from app.services.service import send_sms_otp,otp_gen,get_user_mobile,get_user_id,update_user_otp,update_user_status
+from app.services.service import send_sms_otp,otp_gen,get_user_mobile,calculating_risk_factor,update_user_otp,update_user_status
 from app.util.rest_response import response_handler
 
 router = APIRouter()
@@ -43,8 +43,8 @@ async def verify_otp(otpLogin: schemas.OTPLogin, db: Session = Depends(get_db)):
     return response_handler(True,"Unable to verify OTP.Please try again.",400,None)
 
 
-@router.post("/users/check-risk")
-async def check_user_risk(otpLogin: schemas.OTPLogin, db: Session = Depends(get_db)):
-    if otpLogin.otp == 12345:
-        return  response_handler(True,"verification successful.",200,None)
-    return response_handler(True,"Unable to send OTP currently.Please try again.",200,None)
+@router.get("/users/check-risk")
+async def check_user_risk(user_id: str, db: Session = Depends(get_db)):
+    if calculating_risk_factor(user_id):
+        return  response_handler(True,"Congrats your are eligible for Refinance.",200,None)
+    return response_handler(True,"Sorry, you didn't qualify for refinance",400,None)
