@@ -105,14 +105,14 @@ async def fetch_account_details(mobile, db: Session):
             "account_id": x.account_id,
             "loan_id": x.loan_id,
             "type": x.type,
-            "amount_remaining": x.amount_remaining,
+            "amount_remaining": round(x.amount_remaining, 2) if x.amount_remaining else 0.00,
             "due_date": date(2022, 12, 15) + timedelta(days=random.randint(1, 60)),
             "lending_company": x.lender_name,
             "installment_number": random.randint(1, 9)
         }
         accounts_response.append(account_data)
 
-    data["total_amount_to_be_paid"] = total_amount_due
+    data["total_amount_to_be_paid"] = round(total_amount_due, 2)
     data["accounts_details"] = accounts_response
 
     return True, "Successfully fetched account details", HTTPStatus.OK.value, data
