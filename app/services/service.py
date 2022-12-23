@@ -54,29 +54,12 @@ def create_user(db:Session, mobile:int):
     db.add(User(mobile=mobile))
     return db.commit()
 
-def update_user_status(db:Session,user_id:int):
-    stmt = (
-        update(User)
-        .where(User.id == user_id)
-        .values(is_verified=True)
-        .execution_options(synchronize_session="fetch")
-    )
-    return db.execute(stmt)
 
-def update_user_otp(db:Session,user_id:int,otp:int):
-    stmt = (
-        update(User)
-        .where(User.id == user_id)
-        .values(otp=otp)
-        .execution_options(synchronize_session="fetch")
-    )
-    return db.execute(stmt)
+def update_user_by_id(db:Session,user_id:int,values):
+    result = db.query(User).filter(User.id==user_id).update(values=values,synchronize_session="fetch")
+    db.commit()
+    return result
 
-def otp_gen():
-    otp = ""
-    for i in range(5):
-        otp += str(random.randint(1, 9))
-    return int(otp)
 
 def calculating_risk_factor(user_id):
     time.sleep(0.8)
