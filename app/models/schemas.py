@@ -10,3 +10,6 @@ class OTPLogin(BaseModel):
 
 class User(BaseModel):
     user_id: int
+
+class AccountDetails(BaseModel):
+    mobile: int

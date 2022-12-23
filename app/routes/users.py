@@ -52,7 +52,6 @@ async def check_user_risk(user_id: str, db: Session = Depends(get_db)):
     return response_handler(True,"Sorry, you didn't qualify for refinance",400,None)
 
 
-
 @router.post("/users/check-risk")
 async def check_user_risk(otpLogin: schemas.OTPLogin, db: Session = Depends(get_db)):
     if otpLogin.otp == 12345:

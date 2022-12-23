@@ -1,11 +1,15 @@
 import json
 import random
+from datetime import datetime
+from http import HTTPStatus
+
 from settings import SMS_API_URL,SMS_ACCESS_TOKEN
 import requests
 from sqlalchemy.orm import Session
 from sqlalchemy import update
-from app.models.models import User
+from app.models.models import User, Cibil, CibilAccounts
 import time
+from datetime import date, timedelta
 
 async def send_sms_otp(mobile,  otp):
     sms_flag = False
@@ -64,3 +68,46 @@ def update_user_by_id(db:Session,user_id:int,values):
 def calculating_risk_factor(user_id):
     time.sleep(0.8)
     return random.randint(300, 900) > 600
+
+
+async def fetch_account_details(mobile, db: Session):
+    user_name = get_user_mobile(db, mobile)
+    name = user_name.first_name
+    if user_name.first_name and user_name.last_name:
+        name += (" " + user_name.last_name)
+    response = []
+    total_amount_due = 0
+    data = {
+        "name": name,
+        "total_amount_to_be_paid": 0.00,
+        "accounts_details": response
+    }
+    try:
+        response = db.query(Cibil).filter(Cibil.mobile == mobile).first()
+    except Exception as e:
+        print("Failed to fetch account details", e)
+        return False, "Failed to fetch account details", HTTPStatus.INTERNAL_SERVER_ERROR.value, {}
+    if not response:
+        return True, "Account details not available", HTTPStatus.OK.value, data
+    account_id = response.id
+    try:
+        accounts = db.query(CibilAccounts).filter(CibilAccounts.account_id == account_id).all()
+    except Exception as e:
+        print("Failed to fetch account details", e)
+        return False, "Failed to fetch account details", HTTPStatus.INTERNAL_SERVER_ERROR.value, {}
+    accounts_response = list()
+    for x in accounts:
+        total_amount_due += x.amount_remaining if x.amount_remaining else 0
+        account_data = {
+            "account_id": x.account_id,
+            "loan_id": x.loan_id,
+            "type": x.type,
+            "amount_remaining": x.amount_remaining,
+            "due_date": date(2022, 12, 15) + timedelta(days=random.randint(1, 60))
+        }
+        accounts_response.append(account_data)
+
+    data["total_amount_to_be_paid"] = total_amount_due
+    data["accounts_details"] = accounts_response
+
+    return True, "Successfully fetched account details", HTTPStatus.OK.value, data
