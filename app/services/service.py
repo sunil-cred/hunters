@@ -3,11 +3,13 @@ import random
 from datetime import datetime
 from http import HTTPStatus
 
+import sqlalchemy
+
 from settings import SMS_API_URL,SMS_ACCESS_TOKEN
 import requests
 from sqlalchemy.orm import Session
 from sqlalchemy import update
-from app.models.models import User, Cibil, CibilAccounts
+from app.models.models import User, Cibil, CibilAccounts, LoanDetails
 import time
 from datetime import date, timedelta
 
@@ -71,12 +73,10 @@ def calculating_risk_factor(user_id):
 
 
 async def fetch_account_details(mobile, db: Session):
-    user_details = get_user_mobile(db, mobile)
+    user_details = db.query(LoanDetails).filter(LoanDetails.mobile == mobile).order_by(sqlalchemy.desc(LoanDetails.created_at)).limit(1).first()
     if not user_details:
         return False, "User Details not available", HTTPStatus.BAD_REQUEST.value, {}
-    name = user_details.first_name
-    if user_details.first_name and user_details.last_name:
-        name += (" " + user_details.last_name)
+    name = user_details.name
     response = []
     total_amount_due = 0
     data = {
