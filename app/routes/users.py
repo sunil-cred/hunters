@@ -1,7 +1,7 @@
-from ..constants import *
 from fastapi import Depends, APIRouter,Body
 from sqlalchemy.orm import Session
 from app.models import schemas
+from app.models.insert_dummy_data import insert_dummy_data_cibil_accounts_history
 from app.models.models import User
 from app.database import get_db
 from app.services.service import send_sms_otp,otp_gen,get_user_mobile,calculating_risk_factor,update_user_by_id
@@ -51,6 +51,21 @@ async def check_user_risk(user_id: str, db: Session = Depends(get_db)):
         return  response_handler(True,"Congrats your are eligible for Refinance.",200,None)
     return response_handler(True,"Sorry, you didn't qualify for refinance",400,None)
 
+
+
+@router.post("/users/check-risk")
+async def check_user_risk(otpLogin: schemas.OTPLogin, db: Session = Depends(get_db)):
+    if otpLogin.otp == 12345:
+        return  response_handler(True,"verification successful.",200,None)
+    return response_handler(True,"Unable to send OTP currently.Please try again.",200,None)
+
+
+@router.post("/dummy")
+async def run_dummy_script(db: Session = Depends(get_db)):
+    ## Import the data insertion method from insert_dummy_data.py to upload data
+    status = insert_dummy_data_cibil_accounts_history(db)
+    return {"success": status}
+
 @router.post("/users/reason")
 async def add_refinance_reason(user_id:int = Body(...), reason: str = Body(...), db: Session = Depends(get_db)):
     try:
@@ -61,3 +76,4 @@ async def add_refinance_reason(user_id:int = Body(...), reason: str = Body(...),
     except Exception as e:
         print(e)
     return response_handler(True,"Unable to add reason.Please try again.",400,None)
+
