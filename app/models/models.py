@@ -77,18 +77,15 @@ class DocumentDetails(Base):
     __tablename__ = "document_details"
 
     id = Column(BIGINT, primary_key=True, index=True, autoincrement=True)
-    user_id = Column(BIGINT)
-    account_id = Column(BIGINT)
+    user_id = Column(BIGINT, ForeignKey("users_details.id"))
     document_type = Column(String)
     document_link = Column(String)
     verified_by = Column(String)
     verified_at = Column(TIMESTAMP)
-    verification_status = Column(String)
-    created_at = Column(TIMESTAMP)
-    created_by = Column(String)
-    Updated_at = Column(TIMESTAMP)
-    Updated_by = Column(String)
-    is_deleted = Column(Boolean)
+    verification_status = Column(String,ColumnDefault(False))
+    created_at = Column(TIMESTAMP,ColumnDefault("now()"))
+    Updated_at = Column(TIMESTAMP,ColumnDefault("now()"))
+    is_deleted = Column(Boolean,ColumnDefault(False))
 
 class Cibil(Base):
     __tablename__ = "cibil"

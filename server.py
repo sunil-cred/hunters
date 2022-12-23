@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 import logging
-from app.routes.users import router as test_router
+from app.routes.users import router as user_router
+from app.routes.documents import router as doc_router
 from settings import *
 from app.util.auth import get_service_permissions
 from app.models import models
@@ -20,7 +21,8 @@ logger = logging.LoggerAdapter(logger, extra)
 
 
 app = FastAPI()
-app.include_router(test_router, tags=["test"], prefix=f"{BASE_ROUTE}")
+app.include_router(user_router, tags=["users"], prefix=f"{BASE_ROUTE}")
+app.include_router(doc_router, tags=["documents"], prefix=f"{BASE_ROUTE}")
 
 
 @app.on_event("startup")

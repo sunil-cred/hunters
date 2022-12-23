@@ -1,22 +1,11 @@
 from fastapi.responses import JSONResponse
-from fastapi.logger import logger
 
 
-def success_response(data, message, http_status=200):
+def response_handler(success, message, statuscode, data=dict(),errors=None):
     respose_dict = {
+        "success": success,
         "data": data,
         "message": message,
+        "errors": errors
     }
-    return JSONResponse(status_code=http_status, content=respose_dict)
-
-
-def error_response(message, http_status=500):
-    respose_dict = {"message": message}
-    return JSONResponse(status_code=http_status, content=respose_dict)
-
-
-def response_handler(success, message, statuscode, data=dict()):
-    if success:
-        return success_response(data, message, statuscode)
-    logger.info(message)
-    return error_response(message, statuscode)
+    return JSONResponse(status_code=statuscode, content=respose_dict)

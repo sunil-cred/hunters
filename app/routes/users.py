@@ -3,20 +3,11 @@ from fastapi import Depends, APIRouter
 from sqlalchemy.orm import Session
 from app.models import schemas
 from app.models.models import User
-from app.database import SessionLocal
+from app.database import get_db
 from app.services.service import send_sms_otp,otp_gen,get_user_mobile,get_user_id,update_user_otp,update_user_status
 from app.util.rest_response import response_handler
 
 router = APIRouter()
-
-
-# Dependency
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
 
 
 @router.post("/users/generate-otp")
